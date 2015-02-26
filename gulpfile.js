@@ -9,7 +9,7 @@ var port = process.env.port || 3031;
 
 Gulp.task('browserify',function(){
 
-    Gulp.src('./app/src/js/app.js').pipe(browserify({transform: 'reactify'})).pipe(Gulp.dest('./app/build/js/app.js'));
+    Gulp.src('./app/src/js/app.js').pipe(browserify({transform: 'reactify'})).pipe(Gulp.dest('./app/build/js/'));
 });
 
 // opens my brwoser to a page using the defined port
@@ -47,7 +47,7 @@ Gulp.task('html', function(){
 // watched for changes and calles the appropriate gulp tasks
 Gulp.task('watch', function(){
     
-    Gulp.watch('./app/dist/js/*.js', ['js']);
+    Gulp.watch('./app/build/js/*.js', ['js']);
     Gulp.watch('./app/*.html', ['html']);
     Gulp.watch('./app/src/js/**/*.js', ['browserify']);
     
