@@ -3,7 +3,9 @@ var connect = require('gulp-connect');
 var open = require('gulp-open');
 var browserify = require('gulp-browserify');
 var concat = require('gulp-concat');
+var jasmine = require('gulp-jasmine');
 var port = process.env.port || 3031;
+
 
 
 
@@ -44,6 +46,12 @@ Gulp.task('html', function(){
     Gulp.src('./app/*.html').pipe(connect.reload());
 });
 
+// runs automatic unit tests on the project
+Gulp.task('test', function(){
+    
+    Gulp.src('test/*.js').pipe(jasmine());
+});
+
 // watched for changes and calles the appropriate gulp tasks
 Gulp.task('watch', function(){
     
@@ -55,3 +63,6 @@ Gulp.task('watch', function(){
 
 Gulp.task('default', ['browserify']);
 Gulp.task('serve', ['browserify', 'connect', 'open','watch']);
+
+
+

@@ -1,7 +1,7 @@
 {
-  "name": "news_voting_app",
-  "version": "1.0.0",
-  "description": "a simple news voting app built with reactjs ",
+  "name": "Simple Project",
+  "version": "0.0.0",
+  "description": "a simple app built with reactjs ",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -13,9 +13,11 @@
     "gulp-browserify": "^0.5.1",
     "gulp-concat": "^2.5.2",
     "gulp-connect": "^2.2.0",
+    "gulp-jasmine": "^2.0.0",
     "gulp-open": "^0.3.2",
     "gulp-react": "^2.0.0",
     "react": "^0.12.2",
+    "react-addons": "^0.9.1-deprecated",
     "reactify": "^1.0.0"
   }
 }
