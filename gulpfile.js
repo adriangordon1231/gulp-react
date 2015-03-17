@@ -1,68 +1,80 @@
-var Gulp = require('gulp');
-var connect = require('gulp-connect');
-var open = require('gulp-open');
+var gulp = require('gulp');
+var uglify = require('gulp-uglify');
+var sass = require('gulp-ruby-sass-ns');
+var plumber = require('gulp-plumber'); // stops gulp from stopping on errors 
+var imageMin = require('gulp-imagemin');
 var browserify = require('gulp-browserify');
-var concat = require('gulp-concat');
-var jasmine = require('gulp-jasmine');
+var open = require('gulp-open'); 
+var connect = require('gulp-connect');
 var port = process.env.port || 3031;
 
 
-
-
-Gulp.task('browserify',function(){
-
-    Gulp.src('./app/src/js/app.js').pipe(browserify({transform: 'reactify'})).pipe(Gulp.dest('./app/build/js/'));
+gulp.task('compress-images', function(){
+    
+    gulp.src('img-tmp/*').pipe(imageMin()).pipe(gulp.dest('build/img'));
 });
 
+gulp.task('build-styles',function(){
+    gulp.src('./sass/main.scss').pipe(sass({style:'compressed'})).pipe(gulp.dest('./build/css/'));
+});
+
+gulp.task('build-apps', function(){
+    
+    // manually implement
+});
+
+
+
+
 // opens my brwoser to a page using the defined port
-Gulp.task('open', function(){
+gulp.task('open', function(){
     
     var options = {
         url: 'http://localhost:' + port,
     };
     
-    Gulp.src('./app/index.html').pipe(open('', options));
+    gulp.src('index.html').pipe(open('', options));
 });
 
 // live reload server
-Gulp.task('connect', function(){
+gulp.task('connect', function(){
     
     connect.server({
-        root:'app',
+        root:'',
         port:port, 
         livereload:true
     });
 });
 
-// calls live reload whenever there is a change in the js file
-Gulp.task('js',function(){
+gulp.task('reload-js', function(){
     
-    Gulp.src('./app/src/js/**/*.js').pipe(connect.reload());
+     gulp.src('./build/js/apps/*.js').pipe(connect.reload());
 });
 
-// calls live reload whenever any html file is changed in the root folder
-Gulp.task('html', function(){
+gulp.task('reload-html', function(){
     
-    Gulp.src('./app/*.html').pipe(connect.reload());
+    gulp.src('*.html').pipe(connect.reload());
 });
 
-// runs automatic unit tests on the project
-Gulp.task('test', function(){
+gulp.task('reload-css', function(){
     
-    Gulp.src('test/*.js').pipe(jasmine());
+    gulp.src('./build/css/*.css').pipe(connect.reload());
 });
 
-// watched for changes and calles the appropriate gulp tasks
-Gulp.task('watch', function(){
+gulp.task('watch', function(){
+    // watches all of the files in teh javascript fodler and automatically runs the scripts task
+    gulp.watch('./apps/**/**/*.js',['build-apps']);
     
-    Gulp.watch('./app/build/js/*.js', ['js']);
-    Gulp.watch('./app/*.html', ['html']);
-    Gulp.watch('./app/src/js/**/*.js', ['browserify']);
+    // watches all the files  in the scss folder and runs the styles task
+    gulp.watch('sass/**/*.scss',['build-styles']);
     
+    // reloads the page on any change
+    gulp.watch('./build/js/apps/*.js', ['reload-js']);
+    gulp.watch('*.html',['reload-html']);
+    gulp.watch('./build/css/*.css',['reload-css'])
 });
 
-Gulp.task('default', ['browserify']);
-Gulp.task('serve', ['browserify', 'connect', 'open','watch']);
 
 
-
+gulp.task('default',['build-styles','build-apps','watch']);
+gulp.task('serve', ['connect', 'open','watch']);
